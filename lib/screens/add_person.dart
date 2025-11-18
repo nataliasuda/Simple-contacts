@@ -39,6 +39,23 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF6366F1),
+              onPrimary: Colors.white,
+              onSurface: Color(0xFF374151),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF6366F1),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
@@ -66,13 +83,19 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
       );
 
       final id = await db.insertPerson(person);
-      
+
       if (id > 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pomyślnie zapisano osobę'))
+          SnackBar(
+            content: const Text('Pomyślnie zapisano osobę'),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         );
-        
-        // Reset form
+
         _formKey.currentState!.reset();
         setState(() {
           _birth.clear();
@@ -84,8 +107,12 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Błąd podczas zapisywania: $e'),
-          backgroundColor: Colors.red,
-        )
+          backgroundColor: Colors.red[600],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       );
     } finally {
       setState(() {
@@ -97,72 +124,260 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Dodaj osobę")),
+      appBar: AppBar(
+        title: const Text(
+          "Dodaj nowy kontakt",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: const Color(0xFF111827),
+      ),
+      backgroundColor: const Color(0xFFF9FAFB),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _first,
-                decoration: const InputDecoration(labelText: 'Imię'),
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Podaj imię" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _last,
-                decoration: const InputDecoration(labelText: 'Nazwisko'),
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Podaj nazwisko" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _birth,
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Data urodzenia',
-                  suffixIcon: Icon(Icons.calendar_today),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.2),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                onTap: pickDate,
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Wybierz datę" : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person_add_alt_1,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Dodaj nowy kontakt',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Wypełnij poniższe informacje',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _phone,
-                decoration: const InputDecoration(labelText: 'Numer telefonu'),
-                keyboardType: TextInputType.phone,
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Podaj numer telefonu" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _email,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Podaj email" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _address,
-                decoration: const InputDecoration(labelText: 'Adres'),
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Podaj adres" : null,
-              ),
+
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isSaving ? null : save,
-                child: _isSaving 
-                    ? const CircularProgressIndicator()
-                    : const Text('Zapisz'),
+
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildTextField(
+                      controller: _first,
+                      label: 'Imię',
+                      icon: Icons.person_outline,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? "Podaj imię" : null,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _last,
+                      label: 'Nazwisko',
+                      icon: Icons.person_outline,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? "Podaj nazwisko" : null,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDateField(),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _phone,
+                      label: 'Numer telefonu',
+                      icon: Icons.phone_iphone_outlined,
+                      keyboardType: TextInputType.phone,
+                      validator: (v) => v == null || v.isEmpty
+                          ? "Podaj numer telefonu"
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _email,
+                      label: 'Email',
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? "Podaj email" : null,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _address,
+                      label: 'Adres',
+                      icon: Icons.home_outlined,
+                      maxLines: 2,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? "Podaj adres" : null,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _isSaving ? null : save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6366F1),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: _isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          ),
+                        )
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.save_alt_rounded, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Zapisz kontakt',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      style: const TextStyle(color: Color(0xFF374151), fontSize: 16),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Color(0xFF6B7280)),
+        prefixIcon: Icon(icon, color: const Color(0xFF9CA3AF)),
+        filled: true,
+        fillColor: const Color(0xFFF9FAFB),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildDateField() {
+    return TextFormField(
+      controller: _birth,
+      readOnly: true,
+      onTap: pickDate,
+      style: const TextStyle(color: Color(0xFF374151), fontSize: 16),
+      decoration: InputDecoration(
+        labelText: 'Data urodzenia',
+        labelStyle: const TextStyle(color: Color(0xFF6B7280)),
+        prefixIcon: const Icon(
+          Icons.calendar_today_outlined,
+          color: Color(0xFF9CA3AF),
+        ),
+        suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF9CA3AF)),
+        filled: true,
+        fillColor: const Color(0xFFF9FAFB),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        ),
+      ),
+      validator: (v) => v == null || v.isEmpty ? "Wybierz datę" : null,
     );
   }
 }
