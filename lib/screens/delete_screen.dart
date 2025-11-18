@@ -56,9 +56,30 @@ class _DeleteScreenState extends State<DeleteScreen> {
     );
   }
 
+  void _goBack() {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Usuwanie kontaktów',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: const Color(0xFF111827),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: _goBack,
+        ),
+      ),
       backgroundColor: const Color(0xFFF9FAFB),
       body: FutureBuilder<List<Person>>(
         future: _future,

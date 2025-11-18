@@ -44,169 +44,190 @@ class _PersonListScreenState extends State<PersonListScreen> {
     });
   }
 
+  void _goBack() {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Person>>(
-      future: _future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Color(0xFF6366F1)),
-            ),
-          );
-        }
-
-        final persons = snapshot.data ?? [];
-        final filteredPersons = _filterPersons(persons, _searchQuery);
-
-        return Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Lista kontaktów',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: const Color(0xFF111827),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: _goBack,
+        ),
+      ),
+      backgroundColor: const Color(0xFFF9FAFB),
+      body: FutureBuilder<List<Person>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Color(0xFF6366F1)),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.people_alt_rounded,
-                      color: Color(0xFF6366F1),
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Twoje kontakty',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF111827),
-                        ),
-                      ),
-                      Text(
-                        'Znaleziono: ${filteredPersons.length} z ${persons.length}',
-                        style: const TextStyle(
-                          color: Color(0xFF6B7280),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            );
+          }
 
-            const SizedBox(height: 8),
+          final persons = snapshot.data ?? [];
+          final filteredPersons = _filterPersons(persons, _searchQuery);
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
+          return Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 8,
+                      blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Szukaj kontaktów...',
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: Color(0xFF9CA3AF),
-                    ),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(
-                              Icons.clear_rounded,
-                              color: Color(0xFF9CA3AF),
-                            ),
-                            onPressed: _clearSearch,
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6366F1).withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.people_alt_rounded,
                         color: Color(0xFF6366F1),
-                        width: 2,
+                        size: 24,
                       ),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Twoje kontakty',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        Text(
+                          'Znaleziono: ${filteredPersons.length} z ${persons.length}',
+                          style: const TextStyle(
+                            color: Color(0xFF6B7280),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 8),
 
-            // Search Results or Empty States
-            if (filteredPersons.isEmpty && _searchQuery.isNotEmpty)
-              _buildEmptySearchState()
-            else if (persons.isEmpty)
-              _buildEmptyContactsState()
-            else
-              // Contacts List
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    _reload();
-                    setState(() {});
-                  },
-                  backgroundColor: Colors.white,
-                  color: const Color(0xFF6366F1),
-                  child: ListView.builder(
-                    itemCount: filteredPersons.length,
-                    itemBuilder: (context, i) => PersonTile(
-                      person: filteredPersons[i],
-                      onTap: () {
-                        // Możesz dodać edycję lub szczegóły tutaj
-                        _showPersonDetails(context, filteredPersons[i]);
-                      },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Szukaj kontaktów...',
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: Color(0xFF9CA3AF),
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.clear_rounded,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                              onPressed: _clearSearch,
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF6366F1),
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              if (filteredPersons.isEmpty && _searchQuery.isNotEmpty)
+                _buildEmptySearchState()
+              else if (persons.isEmpty)
+                _buildEmptyContactsState()
+              else
+                // Contacts List
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      _reload();
+                      setState(() {});
+                    },
+                    backgroundColor: Colors.white,
+                    color: const Color(0xFF6366F1),
+                    child: ListView.builder(
+                      itemCount: filteredPersons.length,
+                      itemBuilder: (context, i) => PersonTile(
+                        person: filteredPersons[i],
+                        onTap: () {
+                          _showPersonDetails(context, filteredPersons[i]);
+                        },
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 
