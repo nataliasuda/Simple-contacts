@@ -36,21 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => Navigator.pop(context),
-                color: const Color(0xFF374151),
-              )
-            : null,
-        actions: [
-          if (_currentIndex == 1 || _currentIndex == 2)
-            IconButton(
-              icon: const Icon(Icons.refresh_rounded),
-              onPressed: () => setState(() {}),
-              color: const Color(0xFF374151),
-            ),
-        ],
       ),
       backgroundColor: const Color(0xFFF9FAFB),
       body: pages[_currentIndex],
