@@ -318,94 +318,100 @@ class _PersonListScreenState extends State<PersonListScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
+      isScrollControlled: true,
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 60,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 60,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              // Avatar and Name
-              Center(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                const SizedBox(height: 24),
+
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${person.firstName[0]}${person.lastName[0]}'
-                              .toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
+                        child: Center(
+                          child: Text(
+                            '${person.firstName[0]}${person.lastName[0]}'
+                                .toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${person.firstName} ${person.lastName}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF111827),
+                      const SizedBox(height: 16),
+                      Text(
+                        '${person.firstName} ${person.lastName}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF111827),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              // Contact Details
-              _buildDetailItem(
-                Icons.phone_iphone_rounded,
-                'Telefon',
-                person.phone,
-              ),
-              _buildDetailItem(Icons.email_rounded, 'Email', person.email),
-              _buildDetailItem(
-                Icons.cake_rounded,
-                'Data urodzenia',
-                person.birthDate,
-              ),
-              _buildDetailItem(Icons.home_rounded, 'Adres', person.address),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    ],
                   ),
-                  child: const Text('Zamknij'),
                 ),
-              ),
-            ],
+                const SizedBox(height: 24),
+                // Contact Details
+                _buildDetailItem(
+                  Icons.phone_iphone_rounded,
+                  'Telefon',
+                  person.phone,
+                ),
+                _buildDetailItem(Icons.email_rounded, 'Email', person.email),
+                _buildDetailItem(
+                  Icons.cake_rounded,
+                  'Data urodzenia',
+                  person.birthDate,
+                ),
+                _buildDetailItem(Icons.home_rounded, 'Adres', person.address),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6366F1),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Zamknij'),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
