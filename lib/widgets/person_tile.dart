@@ -89,13 +89,24 @@ class PersonTile extends StatelessWidget {
             color: const Color(0xFFECFDF5),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Text(
-            person.birthDate,
-            style: const TextStyle(
-              color: Color(0xFF065F46),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.cake,
+                size: 14,
+                color: Color(0xFF065F46),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                person.birthDate,
+                style: const TextStyle(
+                  color: Color(0xFF065F46),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
         onTap: onTap,
