@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testowanie/screens/home.dart';
+import 'package:testowanie/screens/main_menu.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Simple Contacts',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const HomeScreen(),
+      home: const MainMenuScreen(),
     );
   }
 }
