@@ -248,8 +248,12 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                       label: 'Email',
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (v) =>
-                          v == null || v.isEmpty ? "Podaj email" : null,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Podaj email';
+                        final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (!regex.hasMatch(v)) return 'Niepoprawny email';
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
