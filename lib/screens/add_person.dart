@@ -168,18 +168,6 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.person_add_alt_1,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
                     const SizedBox(height: 12),
                     Text(
                       l10n.addNewContact,
