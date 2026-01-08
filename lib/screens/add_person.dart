@@ -238,9 +238,14 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                       label: 'Numer telefonu',
                       icon: Icons.phone_iphone_outlined,
                       keyboardType: TextInputType.phone,
-                      validator: (v) => v == null || v.isEmpty
-                          ? "Podaj numer telefonu"
-                          : null,
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
+                          return 'Podaj numer telefonu';
+                        if (!RegExp(r'^[0-9]{9}$').hasMatch(v)) {
+                          return 'Numer musi mieć 9 cyfr';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
