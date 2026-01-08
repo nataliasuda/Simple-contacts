@@ -95,8 +95,12 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
             ),
           ),
         );
-
-        _formKey.currentState!.reset();
+        _first.clear();
+        _last.clear();
+        _birth.clear();
+        _phone.clear();
+        _email.clear();
+        _address.clear();
         setState(() {
           _birth.clear();
         });
