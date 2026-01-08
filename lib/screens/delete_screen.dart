@@ -42,13 +42,13 @@ class _DeleteScreenState extends State<DeleteScreen> {
     });
   }
 
-  Future<void> _delete(int id) async {
-    await db.deletePerson(id);
+  Future<void> _delete(Person p) async {
+    await db.deletePerson(p.id!);
     _reload();
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Kontakt został usunięty'),
+        content: Text('Usunięto: ${p.firstName} ${p.lastName}'),
         backgroundColor: Colors.green[600],
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -212,7 +212,6 @@ class _DeleteScreenState extends State<DeleteScreen> {
 
               const SizedBox(height: 16),
 
-              // Empty States or List
               if (filteredPersons.isEmpty && _searchQuery.isNotEmpty)
                 _buildEmptySearchState()
               else if (persons.isEmpty)
@@ -295,7 +294,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                             ),
                           );
                         },
-                        onDismissed: (direction) => _delete(p.id!),
+                        onDismissed: (direction) => _delete(p),
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -374,7 +373,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                                     TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
-                                        _delete(p.id!);
+                                        _delete(p);
                                       },
                                       style: TextButton.styleFrom(
                                         foregroundColor: Colors.red,
