@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testowanie/db/database.dart';
+import 'package:testowanie/l10n/app_localizations.dart';
 import 'package:testowanie/models/person.dart';
 import 'package:testowanie/widgets/person_tile.dart';
 
@@ -54,11 +55,13 @@ class _PersonListScreenState extends State<PersonListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Lista kontaktów',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        title: Text(
+          localizations.contactList,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -116,16 +119,16 @@ class _PersonListScreenState extends State<PersonListScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Twoje kontakty',
-                          style: TextStyle(
+                        Text(
+                          localizations.yourContacts,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF111827),
                           ),
                         ),
                         Text(
-                          'Znaleziono: ${filteredPersons.length} z ${persons.length}',
+                          '${localizations.found}: ${filteredPersons.length} ${localizations.outOf} ${persons.length}',
                           style: const TextStyle(
                             color: Color(0xFF6B7280),
                             fontSize: 14,
@@ -156,7 +159,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Szukaj kontaktów...',
+                      hintText: localizations.searchContacts,
                       prefixIcon: const Icon(
                         Icons.search_rounded,
                         color: Color(0xFF9CA3AF),
@@ -200,11 +203,10 @@ class _PersonListScreenState extends State<PersonListScreen> {
               const SizedBox(height: 16),
 
               if (filteredPersons.isEmpty && _searchQuery.isNotEmpty)
-                _buildEmptySearchState()
+                _buildEmptySearchState(localizations)
               else if (persons.isEmpty)
-                _buildEmptyContactsState()
+                _buildEmptyContactsState(localizations)
               else
-                // Contacts List
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
@@ -218,7 +220,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                       itemBuilder: (context, i) => PersonTile(
                         person: filteredPersons[i],
                         onTap: () {
-                          _showPersonDetails(context, filteredPersons[i]);
+                          _showPersonDetails(context, filteredPersons[i], localizations);
                         },
                       ),
                     ),
@@ -231,7 +233,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
     );
   }
 
-  Widget _buildEmptySearchState() {
+  Widget _buildEmptySearchState(AppLocalizations l10n) {
     return Expanded(
       child: Center(
         child: Column(
@@ -239,9 +241,9 @@ class _PersonListScreenState extends State<PersonListScreen> {
           children: [
             Icon(Icons.search_off_rounded, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
-            const Text(
-              'Nie znaleziono kontaktów',
-              style: TextStyle(
+            Text(
+              l10n.noSearchResults,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF374151),
@@ -249,7 +251,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Brak wyników dla "${_searchQuery}"',
+              '${l10n.noResultsFor} "${_searchQuery}"',
               textAlign: TextAlign.center,
               style: const TextStyle(color: Color(0xFF6B7280), fontSize: 14),
             ),
@@ -263,7 +265,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('Wyczyść wyszukiwanie'),
+              child: Text(l10n.clearSearch),
             ),
           ],
         ),
@@ -271,7 +273,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
     );
   }
 
-  Widget _buildEmptyContactsState() {
+  Widget _buildEmptyContactsState(AppLocalizations l10n) {
     return Expanded(
       child: Center(
         child: Column(
@@ -291,19 +293,19 @@ class _PersonListScreenState extends State<PersonListScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Brak zapisanych kontaktów',
-              style: TextStyle(
+            Text(
+              l10n.noContactsSaved,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF374151),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Dodaj pierwszy kontakt klikając\nprzycisk "Dodaj" poniżej',
+            Text(
+              l10n.noContactsMessage,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF6B7280), fontSize: 14),
+              style: const TextStyle(color: Color(0xFF6B7280), fontSize: 14),
             ),
           ],
         ),
@@ -311,7 +313,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
     );
   }
 
-  void _showPersonDetails(BuildContext context, Person person) {
+  void _showPersonDetails(BuildContext context, Person person, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -381,19 +383,18 @@ class _PersonListScreenState extends State<PersonListScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Contact Details
                 _buildDetailItem(
                   Icons.phone_iphone_rounded,
-                  'Telefon',
+                  l10n.phone,
                   person.phone,
                 ),
-                _buildDetailItem(Icons.email_rounded, 'Email', person.email),
+                _buildDetailItem(Icons.email_rounded, l10n.email, person.email),
                 _buildDetailItem(
                   Icons.cake_rounded,
-                  'Data urodzenia',
+                  l10n.birthDateCapital,
                   person.birthDate,
                 ),
-                _buildDetailItem(Icons.home_rounded, 'Adres', person.address),
+                _buildDetailItem(Icons.home_rounded, l10n.address, person.address),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
@@ -407,7 +408,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Zamknij'),
+                    child: Text(l10n.close),
                   ),
                 ),
               ],

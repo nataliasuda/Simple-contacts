@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:testowanie/db/database.dart';
+import 'package:testowanie/l10n/app_localizations.dart';
 import 'package:testowanie/models/person.dart';
 
 class AddPersonScreen extends StatefulWidget {
@@ -87,7 +88,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
       if (id > 0) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Pomyślnie zapisano osobę'),
+            content: Text(AppLocalizations.of(context)!.contactSaved),
             backgroundColor: Colors.green[600],
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -105,12 +106,12 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
           _birth.clear();
         });
       } else {
-        throw Exception('Nie udało się zapisać osoby');
+        throw Exception('Failed to save person');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Błąd podczas zapisywania: $e'),
+          content: Text('${AppLocalizations.of(context)!.errorSaving}: $e'),
           backgroundColor: Colors.red[600],
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -127,11 +128,13 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Dodaj nowy kontakt",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        title: Text(
+          l10n.addNewContact,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -178,9 +181,9 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Dodaj nowy kontakt',
-                      style: TextStyle(
+                    Text(
+                      l10n.addNewContact,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -188,7 +191,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Wypełnij poniższe informacje',
+                      l10n.fillInformationBelow,
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
                         fontSize: 14,
@@ -217,32 +220,31 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                   children: [
                     _buildTextField(
                       controller: _first,
-                      label: 'Imię',
+                      label: l10n.firstName,
                       icon: Icons.person_outline,
                       validator: (v) =>
-                          v == null || v.isEmpty ? "Podaj imię" : null,
+                          v == null || v.isEmpty ? l10n.enterFirstName : null,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _last,
-                      label: 'Nazwisko',
+                      label: l10n.lastName,
                       icon: Icons.person_outline,
                       validator: (v) =>
-                          v == null || v.isEmpty ? "Podaj nazwisko" : null,
+                          v == null || v.isEmpty ? l10n.enterLastName : null,
                     ),
                     const SizedBox(height: 16),
-                    _buildDateField(),
+                    _buildDateField(l10n),
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _phone,
-                      label: 'Numer telefonu',
+                      label: l10n.phoneNumber,
                       icon: Icons.phone_iphone_outlined,
                       keyboardType: TextInputType.phone,
                       validator: (v) {
-                        if (v == null || v.isEmpty)
-                          return 'Podaj numer telefonu';
+                        if (v == null || v.isEmpty) return l10n.enterPhone;
                         if (!RegExp(r'^[0-9]{9}$').hasMatch(v)) {
-                          return 'Numer musi mieć 9 cyfr';
+                          return l10n.invalidPhone;
                         }
                         return null;
                       },
@@ -250,24 +252,24 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _email,
-                      label: 'Email',
+                      label: l10n.email,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Podaj email';
+                        if (v == null || v.isEmpty) return l10n.enterEmail;
                         final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                        if (!regex.hasMatch(v)) return 'Niepoprawny email';
+                        if (!regex.hasMatch(v)) return l10n.invalidEmail;
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _address,
-                      label: 'Adres',
+                      label: l10n.address,
                       icon: Icons.home_outlined,
                       maxLines: 2,
                       validator: (v) =>
-                          v == null || v.isEmpty ? "Podaj adres" : null,
+                          v == null || v.isEmpty ? l10n.enterAddress : null,
                     ),
                   ],
                 ),
@@ -298,14 +300,14 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
                             valueColor: AlwaysStoppedAnimation(Colors.white),
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.save_alt_rounded, size: 20),
-                            SizedBox(width: 8),
+                            const Icon(Icons.save_alt_rounded, size: 20),
+                            const SizedBox(width: 8),
                             Text(
-                              'Zapisz kontakt',
-                              style: TextStyle(
+                              l10n.saveContact,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -361,14 +363,14 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
     );
   }
 
-  Widget _buildDateField() {
+  Widget _buildDateField(AppLocalizations l10n) {
     return TextFormField(
       controller: _birth,
       readOnly: true,
       onTap: pickDate,
       style: const TextStyle(color: Color(0xFF374151), fontSize: 16),
       decoration: InputDecoration(
-        labelText: 'Data urodzenia',
+        labelText: l10n.birthDate,
         labelStyle: const TextStyle(color: Color(0xFF6B7280)),
         prefixIcon: const Icon(
           Icons.calendar_today_outlined,
@@ -390,7 +392,7 @@ class _AddPersonScreenState extends State<AddPersonScreen> {
           borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
         ),
       ),
-      validator: (v) => v == null || v.isEmpty ? "Wybierz datę" : null,
+      validator: (v) => v == null || v.isEmpty ? l10n.chooseDate : null,
     );
   }
 }

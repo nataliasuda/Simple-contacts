@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testowanie/db/database.dart';
+import 'package:testowanie/l10n/app_localizations.dart';
 import 'package:testowanie/models/person.dart';
 
 class DeleteScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Usunięto: ${p.firstName} ${p.lastName}'),
+        content: Text('${AppLocalizations.of(context)!.contactDeleted}: ${p.firstName} ${p.lastName}'),
         backgroundColor: Colors.green[600],
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -66,11 +67,13 @@ class _DeleteScreenState extends State<DeleteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Usuwanie kontaktów',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        title: Text(
+          l10n.deleteContact,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -128,16 +131,16 @@ class _DeleteScreenState extends State<DeleteScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Zarządzaj kontaktami',
-                          style: TextStyle(
+                        Text(
+                          l10n.manageContacts,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF111827),
                           ),
                         ),
                         Text(
-                          'Znaleziono: ${filteredPersons.length} z ${persons.length}',
+                          '${l10n.found}: ${filteredPersons.length} ${l10n.outOf} ${persons.length}',
                           style: const TextStyle(
                             color: Color(0xFF6B7280),
                             fontSize: 14,
@@ -168,7 +171,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Szukaj kontaktów do usunięcia...',
+                      hintText: l10n.searchContactsToDelete,
                       prefixIcon: const Icon(
                         Icons.search_rounded,
                         color: Color(0xFF9CA3AF),
@@ -213,9 +216,9 @@ class _DeleteScreenState extends State<DeleteScreen> {
               const SizedBox(height: 16),
 
               if (filteredPersons.isEmpty && _searchQuery.isNotEmpty)
-                _buildEmptySearchState()
+                _buildEmptySearchState(l10n)
               else if (persons.isEmpty)
-                _buildEmptyContactsState()
+                _buildEmptyContactsState(l10n)
               else
                 Expanded(
                   child: ListView.builder(
@@ -243,7 +246,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Usuń',
+                                l10n.delete,
                                 style: TextStyle(
                                   color: Colors.red[600],
                                   fontWeight: FontWeight.w600,
@@ -261,19 +264,17 @@ class _DeleteScreenState extends State<DeleteScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              title: const Row(
+                              title: Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.warning_amber_rounded,
                                     color: Colors.orange,
                                   ),
-                                  SizedBox(width: 8),
-                                  Text('Potwierdź usunięcie'),
+                                  const SizedBox(width: 8),
+                                  Text(l10n.confirmDelete),
                                 ],
                               ),
-                              content: const Text(
-                                'Czy na pewno chcesz usunąć ten kontakt? Tej operacji nie można cofnąć.',
-                              ),
+                              content: Text(l10n.deleteWarning),
                               actions: [
                                 TextButton(
                                   onPressed: () =>
@@ -281,14 +282,14 @@ class _DeleteScreenState extends State<DeleteScreen> {
                                   style: TextButton.styleFrom(
                                     foregroundColor: const Color(0xFF6B7280),
                                   ),
-                                  child: const Text('Anuluj'),
+                                  child: Text(l10n.cancel),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context, true),
                                   style: TextButton.styleFrom(
                                     foregroundColor: Colors.red,
                                   ),
-                                  child: const Text('Usuń'),
+                                  child: Text(l10n.delete),
                                 ),
                               ],
                             ),
@@ -356,10 +357,8 @@ class _DeleteScreenState extends State<DeleteScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  title: const Text('Potwierdź usunięcie'),
-                                  content: const Text(
-                                    'Czy na pewno chcesz usunąć ten kontakt?',
-                                  ),
+                                  title: Text(l10n.confirmDelete),
+                                  content: Text(l10n.deleteWarning),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -368,7 +367,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                                           0xFF6B7280,
                                         ),
                                       ),
-                                      child: const Text('Anuluj'),
+                                      child: Text(l10n.cancel),
                                     ),
                                     TextButton(
                                       onPressed: () {
@@ -378,7 +377,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                                       style: TextButton.styleFrom(
                                         foregroundColor: Colors.red,
                                       ),
-                                      child: const Text('Usuń'),
+                                      child: Text(l10n.delete),
                                     ),
                                   ],
                                 ),
@@ -397,7 +396,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
     );
   }
 
-  Widget _buildEmptySearchState() {
+  Widget _buildEmptySearchState(AppLocalizations l10n) {
     return Expanded(
       child: Center(
         child: Column(
@@ -405,9 +404,9 @@ class _DeleteScreenState extends State<DeleteScreen> {
           children: [
             Icon(Icons.search_off_rounded, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
-            const Text(
-              'Nie znaleziono kontaktów',
-              style: TextStyle(
+            Text(
+              l10n.noSearchResults,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF374151),
@@ -415,7 +414,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Brak wyników dla "${_searchQuery}"',
+              '${l10n.noResultsFor} "${_searchQuery}"',
               textAlign: TextAlign.center,
               style: const TextStyle(color: Color(0xFF6B7280), fontSize: 14),
             ),
@@ -429,7 +428,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('Wyczyść wyszukiwanie'),
+              child: Text(l10n.clearSearch),
             ),
           ],
         ),
@@ -437,7 +436,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
     );
   }
 
-  Widget _buildEmptyContactsState() {
+  Widget _buildEmptyContactsState(AppLocalizations l10n) {
     return Expanded(
       child: Center(
         child: Column(
@@ -446,7 +445,7 @@ class _DeleteScreenState extends State<DeleteScreen> {
             Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'Brak kontaktów do usunięcia',
+              l10n.noContactsToDelete,
               style: TextStyle(color: Colors.grey[600], fontSize: 16),
             ),
           ],
